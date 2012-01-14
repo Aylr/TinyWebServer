@@ -55,10 +55,15 @@ SdVolume volume;
 SdFile root;
 SdFile file;
 
-static uint8_t mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 
+// -------------------- Settings you should modify -------------------- 
+
+static uint8_t mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 // Don't forget to modify the IP to an available one on your home network
-byte ip[] = { 192, 168, 5, 177 };
+byte ip[] = { 192, 168, 1, 9 };
+
+
+// -------------------- send file handler -------------------- 
 
 void send_file_name(TinyWebServer& web_server, const char* filename) {
   if (!filename) {
@@ -80,12 +85,18 @@ void send_file_name(TinyWebServer& web_server, const char* filename) {
   }
 }
 
+
+// -------------------- file handler -------------------- 
+
 boolean file_handler(TinyWebServer& web_server) {
   char* filename = TinyWebServer::get_file_from_path(web_server.get_path());
   send_file_name(web_server, filename);
   free(filename);
   return true;
 }
+
+
+// -------------------- led blink handler -------------------- 
 
 boolean blink_led_handler(TinyWebServer& web_server) {
   web_server.send_error_code(200);
@@ -105,6 +116,9 @@ boolean blink_led_handler(TinyWebServer& web_server) {
   return true;
 }
 
+
+// -------------------- led status handler -------------------- 
+
 boolean led_status_handler(TinyWebServer& web_server) {
   web_server.send_error_code(200);
   web_server.send_content_type("text/plain");
@@ -114,10 +128,16 @@ boolean led_status_handler(TinyWebServer& web_server) {
   return true;
 }
 
+
+// -------------------- index handler -------------------- 
+
 boolean index_handler(TinyWebServer& web_server) {
   send_file_name(web_server, "INDEX.HTM");
   return true;
 }
+
+
+// -------------------- file uploader -------------------- 
 
 void file_uploader_handler(TinyWebServer& web_server,
 			   TinyWebPutHandler::PutAction action,
@@ -156,6 +176,10 @@ void file_uploader_handler(TinyWebServer& web_server,
     file.close();
   }
 }
+
+
+
+// -------------------- setup and run loops -------------------- 
 
 void setup() {
   Serial.begin(115200);
